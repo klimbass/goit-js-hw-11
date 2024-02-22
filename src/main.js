@@ -18,7 +18,7 @@ const optionsFetch = new URLSearchParams({
   per_page: 21,
 });
 
-const loader = '<span class="loader"></span>';
+const loader = document.querySelector('.loader');
 
 const gallery = document.querySelector('.gallery');
 
@@ -29,12 +29,14 @@ form.addEventListener('submit', event => {
   const searchRequest = event.target.elements.input.value.trim();
 
   if (searchRequest) {
-    gallery.innerHTML = loader;
+    gallery.innerHTML = '';
+    loader.classList.remove('invisible');
     optionsFetch.set('q', searchRequest);
 
     fetchPixabayAPI(optionsFetch)
       .then(data => {
         if (data.hits.length === 0) {
+          loader.classList.add('invisible');
           gallery.innerHTML = '';
           iziToast.error({
             position: 'topRight',
@@ -46,6 +48,7 @@ form.addEventListener('submit', event => {
               'Sorry, there are no images matching your search query. Please try again!',
           });
         } else {
+          loader.classList.add('invisible');
           gallery.innerHTML = renderGallery(data.hits);
           const gallerySimple = new SimpleLightbox('.gallery a', {
             captionsData: 'alt',
@@ -55,9 +58,18 @@ form.addEventListener('submit', event => {
         }
       })
       .catch(err => {
-        console.log(err);
+        iziToast.error({
+          position: 'topRight',
+          maxWidth: '380px',
+          progressBar: false,
+          iconUrl: icon,
+          transitionIn: 'fadeInLeft',
+          message: `Error:${err} `,
+        });
       });
   } else {
+    loader.classList.add('invisible');
+    gallery.innerHTML = '';
     iziToast.show({
       progressBar: false,
       position: 'topRight',
