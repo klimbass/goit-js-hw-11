@@ -9,7 +9,7 @@ import renderGallery from './js/render-functions.js';
 
 import icon from './img/icon-close.svg';
 
-const options = new URLSearchParams({
+const optionsFetch = new URLSearchParams({
   key: '4348225-c90d49c3185e1d6dd0df9aa80',
   q: '',
   image_type: 'photo',
@@ -27,10 +27,12 @@ const form = document.querySelector('.form');
 form.addEventListener('submit', event => {
   event.preventDefault();
   const searchRequest = event.target.elements.input.value.trim();
+
   if (searchRequest) {
     gallery.innerHTML = loader;
-    options.set('q', searchRequest);
-    fetchPixabayAPI(options)
+    optionsFetch.set('q', searchRequest);
+
+    fetchPixabayAPI(optionsFetch)
       .then(data => {
         if (data.hits.length === 0) {
           gallery.innerHTML = '';
@@ -56,7 +58,6 @@ form.addEventListener('submit', event => {
         console.log(err);
       });
   } else {
-    console.log('Put the request!');
     iziToast.show({
       progressBar: false,
       position: 'topRight',
